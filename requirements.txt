@@ -1,0 +1,6 @@
+Django
+djangorestframework
+openai==0.28.0
+PyPDF2
+python-dotenv
+reportlab
