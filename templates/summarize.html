@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Summarizer</title>
+
+    <!-- Add some styling -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        form {
+            margin: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 80%;
+            height: 200px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <h1>Report Summary</h1>
+    </header>
+
+    <!-- Main Content -->
+    <div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="pdf_file">Upload PDF file:</label>
+            <input type="file" name="pdf_file" accept=".pdf">
+            <button type="submit">Generate Summary</button>
+        </form>
+
+        {% if summary_text %}
+            <h2>Summary:</h2>
+            <textarea rows="10" cols="50" readonly>{{ summary_text }}</textarea>
+        {% endif %}
+    </div>
+</body>
+</html>
