@@ -1,5 +1,5 @@
 """
-WSGI config for summary project.
+WSGI config for summarize project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,8 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "summary.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "summarize.settings")
 
 application = get_wsgi_application()
 
-app=application
+app= application
