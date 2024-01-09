@@ -1,5 +1,5 @@
 Django
 djangorestframework
-openai
+openai==0.28.0
 PyPDF2
 python-dotenv
