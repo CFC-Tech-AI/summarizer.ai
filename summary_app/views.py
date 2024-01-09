@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import openai
-
 from dotenv import load_dotenv
 import os
 
@@ -24,16 +23,20 @@ def summarize_pdf(request):
             text += pdf_reader.pages[page_num].extract_text()
 
         openai.api_key = os.getenv('api_key')
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=text,
-            max_tokens=150,
-            temperature=0.7
-        )
-        summary_text = response['choices'][0]['text']
+
+        try:
+            response = openai.Completion.create(
+                engine="gpt-3.5-turbo-instruct",
+                prompt=text,
+                max_tokens=150,
+                temperature=0.7
+            )
+            summary_text = response['choices'][0]['text']
+        except Exception as e:
+            print(f"Error during OpenAI API request: {e}")
+            summary_text = "Error occurred during summarization."
 
     return render(request, 'summarize.html', {'summary_text': summary_text})
-
 
 
 from rest_framework.views import APIView
@@ -42,8 +45,8 @@ from rest_framework import status
 from .serializers import PdfSummarySerializer
 
 class PdfSummaryAPIView(APIView):
+    configure()
     def post(self, request, *args, **kwargs):
-        configure()
         serializer = PdfSummarySerializer(data=request.data)
         if serializer.is_valid():
             pdf_file = serializer.validated_data['pdf_file']
@@ -54,14 +57,20 @@ class PdfSummaryAPIView(APIView):
                 text += pdf_reader.pages[page_num].extract_text()
 
             openai.api_key = os.getenv('api_key')
-            response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt=text,
-                max_tokens=150,
-                temperature=0.7
-            )
-            summary_text = response['choices'][0]['text']
+
+            try:
+                response = openai.Completion.create(
+                    engine="gpt-3.5-turbo-instruct",
+                    prompt=text,
+                    max_tokens=150,
+                    temperature=0.7
+                )
+                summary_text = response['choices'][0]['text']
+            except Exception as e:
+                print(f"Error during OpenAI API request: {e}")
+                return Response({'summary_text': 'Error occurred during summarization.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response({'summary_text': summary_text}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
